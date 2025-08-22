@@ -1,0 +1,6 @@
+@Elseware_HostAddress = http://localhost:5143
+
+GET {{Elseware_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

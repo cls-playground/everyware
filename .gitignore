@@ -1,0 +1,48 @@
+# Cartelle di Visual Studio
+.vs/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Cartelle di compilazione
+bin/
+obj/
+out/
+Generated_Code/
+
+# File temporanei e di log
+*.log
+*.tmp
+*.bak
+
+# File di configurazione locali
+*.dbmdl
+*.pdb
+*.cache
+*.config
+
+# File di sistema
+Thumbs.db
+Desktop.ini
+
+# File di pacchetti
+*.nupkg
+*.snupkg
+*.nuspec
+
+# Cartelle di test e risultati
+TestResults/
+*.trx
+
+# File di backup e lock
+*.lock
+*.orig
+
+# Cartelle e file di dipendenze
+packages/
+node_modules/
+
+# File specifici di Git
+.git/
