@@ -4,6 +4,8 @@
     "Development": {
       "commandName": "Project",
       "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "launchUrl": "scalar",
       "applicationUrl": "https://localhost:7001",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
@@ -12,6 +14,8 @@
     "Staging": {
       "commandName": "Project",
       "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "launchUrl": "scalar",
       "applicationUrl": "https://localhost:7002",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Staging"
@@ -20,6 +24,8 @@
     "Production": {
       "commandName": "Project",
       "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "launchUrl": "scalar",
       "applicationUrl": "https://localhost:7003",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Production"

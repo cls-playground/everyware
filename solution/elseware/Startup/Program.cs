@@ -14,7 +14,7 @@ Everyware - Copyright © 2025 by CLS
 **** Created On:        19/08/2025
 ****
 **** Last Changed By:   Cristiano Luelli
-**** Last Changed On:   21/08/2025
+**** Last Changed On:   23/08/2025
 ****
 ********************************************************************************************************************************************
 
@@ -25,6 +25,7 @@ Everyware - Copyright © 2025 by CLS
 
 using Elseware.Extensions;
 using Elseware.Middlewares;
+using Scalar.AspNetCore;
 
 #endregion Usings
 
@@ -83,6 +84,7 @@ public class Program {
         // Configures the HTTP request pipeline for the development environment.
         if (l_WebApplication.Environment.IsDevelopment()) {
             l_WebApplication.MapOpenApi();
+            l_WebApplication.MapScalarApiReference();
         }
 
         // Configures middleware pipeline.
