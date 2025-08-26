@@ -7,11 +7,32 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Content Include="logo-cls.ico" />
+	  <Compile Remove="Data\**" />
+	  <Content Remove="Data\**" />
+	  <EmbeddedResource Remove="Data\**" />
+	  <None Remove="Data\**" />
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Remove="AddProductStockScript.cs" />
+	  <Compile Remove="BaseDatabaseScript.cs" />
+	  <Compile Remove="DatabaseManager.cs" />
+	  <Compile Remove="DatabaseManagerExtension.cs" />
+	  <Compile Remove="DatabaseVersion.cs" />
+	  <Compile Remove="IDatabaseManager.cs" />
+	  <Compile Remove="IDatabaseScript.cs" />
+	  <Compile Remove="InitialSchemaScript.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.8" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.8" />
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.8" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.8">
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		  <PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.8" />
 		<PackageReference Include="Scalar.AspNetCore" Version="2.7.0" />
 	</ItemGroup>
 

@@ -8,7 +8,8 @@
       "launchUrl": "scalar",
       "applicationUrl": "https://localhost:7001",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "JWT_SECRET_KEY": "M8r#vT2q@xL5^gN0b!eC6yD9a%fH4sJ7tZ1mK3wP"
       }
     },
     "Staging": {
@@ -18,7 +19,8 @@
       "launchUrl": "scalar",
       "applicationUrl": "https://localhost:7002",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Staging"
+        "ASPNETCORE_ENVIRONMENT": "Staging",
+        "JWT_SECRET_KEY": "Z3x@eT1qW8m#sD2uK5b^gH0fN6y%jC4lB7tV9pR"
       }
     },
     "Production": {
@@ -28,7 +30,8 @@
       "launchUrl": "scalar",
       "applicationUrl": "https://localhost:7003",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Production"
+        "ASPNETCORE_ENVIRONMENT": "Production",
+        "JWT_SECRET_KEY": "K5b^gH0fN6y%jC4lB3xZ7vP@eT1qW8m#sD2uM9r"
       }
     }
   }
