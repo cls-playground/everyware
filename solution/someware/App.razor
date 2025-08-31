@@ -1,0 +1,43 @@
+﻿
+@*
+Everyware - Copyright © 2025 by CLS
+
+********************************************************************************************************************************************
+****
+**** Project:           Someware
+****
+**** Module:            App.razor
+****
+**** Version:           2025.1.0.0001
+****
+**** Created By:        Cristiano Luelli
+**** Created On:        27/08/2025
+****
+**** Last Changed By:   Cristiano Luelli
+**** Last Changed On:   27/08/2025
+****
+**** Defines the root component of the application, handling routing, layout resolution and authentication state propagation.
+****
+********************************************************************************************************************************************
+
+Everyware - Copyright © 2025 by CLS
+*@
+
+@using Microsoft.AspNetCore.Components.Authorization
+
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(App).Assembly">
+        <Found Context="routeData">
+            <PageTitle>@routeData.PageType.Name</PageTitle>
+            <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        </Found>
+        <NotFound>
+            <PageTitle>Not found</PageTitle>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <h1>Page Not Found</h1>
+                <p role="alert">Sorry, there's nothing at this address.</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>

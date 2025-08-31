@@ -1,0 +1,232 @@
+﻿
+@*
+Everyware - Copyright © 2025 by CLS
+
+********************************************************************************************************************************************
+****
+**** Project:           Someware
+****
+**** Module:            NavMenu.razor
+****
+**** Version:           2025.1.0.0001
+****
+**** Created By:        Cristiano Luelli
+**** Created On:        27/08/2025
+****
+**** Last Changed By:   Cristiano Luelli
+**** Last Changed On:   31/08/2025
+****
+**** Defines the navigation menu component for the Someware application.
+****
+********************************************************************************************************************************************
+
+Everyware - Copyright © 2025 by CLS
+*@
+
+@implements IDisposable
+
+@using Microsoft.AspNetCore.Components.Authorization
+@using Someware.Services
+@using Someware.Services.Authentication
+@using Someware.Services.Navigation
+
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">
+            <img src="@this.projectIcon"
+                 alt="App Icon"
+                 class="navbar-brand-icon" />
+            @this.projectName</a>
+    </div>
+</div>
+
+<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+
+<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+    <nav class="nav flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="counter">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="weather">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="auth">
+                <span class="bi bi-lock-nav-menu" aria-hidden="true"></span> Auth Required
+            </NavLink>
+        </div>
+
+        <AuthorizeView>
+            <Authorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="Account/Manage">
+                        <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> @context.User.Identity?.Name
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <button type="button" class="nav-link" @onclick="SignOut">
+                        <span class="bi bi-arrow-bar-left-nav-menu" aria-hidden="true"></span> Logout
+                    </button>
+                </div>
+            </Authorized>
+            <NotAuthorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="signup">
+                        <span class="bi bi-person-nav-menu" aria-hidden="true"></span> Register
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="signin">
+                        <span class="bi bi-person-badge-nav-menu" aria-hidden="true"></span> Login
+                    </NavLink>
+                </div>
+            </NotAuthorized>
+        </AuthorizeView>
+    </nav>
+</div>
+
+
+@* 
+*******************************************************************************************************************************************
+****
+**** Defines the logic and interaction handlers for the main navigation menu.
+****
+*******************************************************************************************************************************************
+*@
+
+@code {
+
+    #region Private Fields
+
+    /// <summary>
+    /// A <see cref="String"/> instance representing the current base-relative URL used for navigation tracking.
+    /// </summary>
+    private String? currentUrl;
+
+    /// <summary>
+    /// A <see cref="String"/> instance representing the configured filename of the icon associated with the project.
+    /// </summary>
+    private String projectIcon = String.Empty;
+
+    /// <summary>
+    /// A <see cref="String"/> instance representing the configured display name of the project.
+    /// </summary>
+    private String projectName = String.Empty;
+
+    #endregion Private Fields
+
+    #region Private Properties
+
+    /// <summary>
+    /// Gets or sets the authentication service used to manage user sessions.
+    /// </summary>
+    /// <remarks>
+    /// This property is injected by the Blazor framework at runtime.
+    /// </remarks>
+    [Inject]
+    private AuthenticationService AuthenticationService { get; set; } = null!;
+
+    /// <summary>
+    /// Gets or sets the configuration of the application.
+    /// </summary>
+    [Inject]
+    private IConfiguration Configuration { get; set; } = null!;
+
+    /// <summary>
+    /// Gets or sets the navigation manager used to redirect the user.
+    /// </summary>
+    /// <remarks>
+    /// This property is injected by the Blazor framework at runtime.
+    /// </remarks>
+    [Inject]
+    private NavigationManager NavigationManager { get; set; } = null!;
+
+    /// <summary>
+    /// Gets or sets the redirect manager used to perform safe navigation after logout.
+    /// </summary>
+    /// <remarks>
+    /// This property is injected by the Blazor framework at runtime.
+    /// </remarks>
+    [Inject]
+    private RedirectService RedirectManager { get; set; } = null!;
+
+    #endregion Private Properties
+
+    #region Public Methods
+
+    /// <summary>
+    /// Unsubscribes from navigation events to prevent memory leaks.
+    /// </summary>
+    public void Dispose()
+
+    =>  this.NavigationManager.LocationChanged -= this.OnLocationChanged;
+
+    #endregion Public Methods
+
+    #region Protected Override Methods
+
+    /// <summary>
+    /// Initializes the component by capturing the current URL and subscribing to navigation changes.
+    /// </summary>
+    protected override void OnInitialized() {
+
+        this.projectName = this.Configuration["Project:Name"]
+            ?? throw new InvalidOperationException("Missing configuration for Project:Name");
+
+        var l_ProjectIcon = this.Configuration["Project:Icon"]
+            ?? throw new InvalidOperationException("Missing configuration for Project:Icon");
+
+        this.projectIcon = $"/images/{l_ProjectIcon}.png";
+
+        this.currentUrl = this.NavigationManager.ToBaseRelativePath(this.NavigationManager.Uri);
+        this.NavigationManager.LocationChanged += this.OnLocationChanged;
+    }
+
+    #endregion Protected Override Methods
+
+    #region Private Methods
+
+    /// <summary>
+    /// Handles navigation changes by updating the current URL and triggering a UI refresh.
+    /// </summary>
+    /// <param name="p_Sender">
+    /// A nullable <see cref="Object"/> instance representing the event source.
+    /// </param>
+    /// <param name="p_EventArgs">
+    /// A <see cref="LocationChangedEventArgs"/> instance containing the updated location.
+    /// </param>
+    private void OnLocationChanged(
+        Object? p_Sender
+    ,   LocationChangedEventArgs p_EventArgs) {
+
+        this.currentUrl = this.NavigationManager.ToBaseRelativePath(p_EventArgs.Location);
+        this.StateHasChanged();
+    }
+
+    #endregion Private Methods
+
+    #region Private Async Methods
+
+    /// <summary>
+    /// Signs out the current user and redirects to the sign-in page.
+    /// </summary>
+    private async Task SignOut() {
+
+        await this.AuthenticationService.SignOutAsync();
+        this.RedirectManager.RedirectTo($"/signin?returnUrl={Uri.EscapeDataString(this.currentUrl ?? "/")}");
+    }
+
+    #endregion Private Async Methods
+}

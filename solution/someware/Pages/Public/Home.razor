@@ -1,0 +1,86 @@
+﻿
+@*
+Everyware - Copyright © 2025 by CLS
+
+*******************************************************************************************************************************************
+****
+**** Project:           Someware
+****
+**** Module:            Home.razor
+****
+**** Version:           2025.1.0.0001
+****
+**** Created By:        Cristiano Luelli
+**** Created On:        27/08/2025
+****
+**** Last Changed By:   Cristiano Luelli
+**** Last Changed On:   31/08/2025
+****
+**** Defines the Home page of the application.
+****
+*******************************************************************************************************************************************
+
+Everyware - Copyright © 2025 by CLS
+*@
+
+@page "/"
+
+<PageTitle>Home</PageTitle>
+
+<div class="center-content">
+    <img src=@this.projectLogo />
+</div>
+
+
+@* 
+*******************************************************************************************************************************************
+****
+**** Defines the logic and interaction handlers for the Home page.
+****
+*******************************************************************************************************************************************
+*@
+
+@code {
+
+    #region Private Fields
+
+    /// <summary>
+    /// A <see cref="String"/> instance representing the configured filename of the logo associated with the project.
+    /// </summary>
+    private String projectLogo = String.Empty;
+
+    /// <summary>
+    /// A <see cref="String"/> instance representing the configured display name of the project.
+    /// </summary>
+    private String projectName = String.Empty;
+
+    #endregion Private Fields
+
+    #region Private Properties
+
+    /// <summary>
+    /// Gets or sets the configuration of the application.
+    /// </summary>
+    [Inject]
+    private IConfiguration Configuration { get; set; } = null!;
+
+    #endregion Private Properties
+
+    #region Protected Override Methods
+
+    /// <summary>
+    /// Initializes the component by retrieving the project name and logo filename from configuration.
+    /// </summary>
+    protected override void OnInitialized() {
+
+        this.projectName = Configuration["Project:Name"]
+            ?? throw new InvalidOperationException("Missing configuration for Project:Name");
+
+        var l_ProjectLogo = Configuration["Project:Logo"] 
+            ?? throw new InvalidOperationException("Missing configuration for Project:Logo");
+
+        this.projectLogo = $"/images/{l_ProjectLogo}.png";
+    }
+
+    #endregion Protected Override Methods
+}

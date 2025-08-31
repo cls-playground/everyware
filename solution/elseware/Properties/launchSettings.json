@@ -10,7 +10,9 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "JWT_SECRET_KEY": "M8r#vT2q@xL5^gN0b!eC6yD9a%fH4sJ7tZ1mK3wP"
-      }
+      },
+      "browser": "edge",
+      "browserArguments": "--user-data-dir=\"C:\\Users\\Crist\\AppData\\Local\\Microsoft\\Edge\\User Data\" --profile-directory=Default"
     },
     "Staging": {
       "commandName": "Project",
@@ -21,7 +23,9 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Staging",
         "JWT_SECRET_KEY": "Z3x@eT1qW8m#sD2uK5b^gH0fN6y%jC4lB7tV9pR"
-      }
+      },
+      "browser": "edge",
+      "browserArguments": "--user-data-dir=\"C:\\Users\\Crist\\AppData\\Local\\Microsoft\\Edge\\User Data\" --profile-directory=Default"
     },
     "Production": {
       "commandName": "Project",

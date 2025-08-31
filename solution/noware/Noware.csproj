@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <!-- Define custom build configurations -->
+	<Configurations>Development;Staging;Production</Configurations>
+  </PropertyGroup>
+
+  <!-- Development configuration (replaces Debug) -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Development'">
+	<BlazorEnvironment>Development</BlazorEnvironment>
+	<DefineConstants>DEVELOPMENT</DefineConstants>
+  </PropertyGroup>
+
+  <!-- Staging configuration (custom) -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Staging'">
+	<BlazorEnvironment>Staging</BlazorEnvironment>
+	<DefineConstants>STAGING</DefineConstants>
+  </PropertyGroup>
+
+  <!-- Production configuration (replaces Release) -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Production'">
+	<BlazorEnvironment>Production</BlazorEnvironment>
+	<DefineConstants>PRODUCTION</DefineConstants>
+  </PropertyGroup>
+
+</Project>

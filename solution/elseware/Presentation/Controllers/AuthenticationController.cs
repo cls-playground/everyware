@@ -14,7 +14,7 @@ Everyware - Copyright © 2025 by CLS
 **** Created On:        25/08/2025
 ****
 **** Last Changed By:   Cristiano Luelli
-**** Last Changed On:   26/08/2025
+**** Last Changed On:   31/08/2025
 ****
 ********************************************************************************************************************************************
 
@@ -23,13 +23,13 @@ Everyware - Copyright © 2025 by CLS
 
 #region Usings
 
-using Elseware.Application.Dto.Requests;
-using Elseware.Application.Dto.Responses;
 using Elseware.Application.Interfaces;
 using Elseware.Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Noware.Dto.Requests;
+using Noware.Dto.Responses;
 
 #endregion Usings
 
@@ -43,18 +43,8 @@ namespace Elseware.Presentation.Controllers;
 public class AuthenticationController(
     SignInManager<Account> p_SignInManager
 ,   UserManager<Account> p_UserManager
-,   IConfiguration p_Configuration
 ,   IJwtService p_JwtService) : ControllerBase {
-
-    #region Private Fields
-
-    private readonly SignInManager<Account> m_SignInManager = p_SignInManager;
-    private readonly UserManager<Account> m_UserManager = p_UserManager;
-    private readonly IConfiguration m_Configuration = p_Configuration;
-    private readonly IJwtService m_JwtService = p_JwtService;
-
-    #endregion Private Fields
-
+    
     #region Public Async Methods
 
     /// <summary>
@@ -75,32 +65,40 @@ public class AuthenticationController(
             return this.BadRequest(new { Message = "Invalid request data", Errors = this.ModelState });
         }
 
-        var l_SignInResult = await m_SignInManager.PasswordSignInAsync(p_SignIn.Email, p_SignIn.Password, false, false);
-        if (l_SignInResult.Succeeded == true) {
-            var l_SignedInAccount = await m_UserManager.FindByEmailAsync(p_SignIn.Email);
-            if (l_SignedInAccount is null) {
-                return this.Unauthorized(new { Message = "Authentication failed. Please check your credentials and try again." });
-            }
+        var l_SignInResult = 
+            await p_SignInManager.PasswordSignInAsync(
+                p_SignIn.Email
+            ,   p_SignIn.Password
+            ,   isPersistent: false
+            ,   lockoutOnFailure: false);
 
-            var l_JwtResult = await m_JwtService.GenerateTokenAsync(l_SignedInAccount);
-            if (String.IsNullOrWhiteSpace(l_JwtResult.Token)) {
-                return this.BadRequest(
-                    new { 
-                            Message = 
-                                "Token generation failed due to missing or invalid user claims. "
-                            +   "Please verify the account data and try again." });
-            }
-
-            var l_Response = new SignInResponse {
-                Jwt = l_JwtResult,
-                UserId = l_SignedInAccount.Id.ToString(),
-                Roles = await m_UserManager.GetRolesAsync(l_SignedInAccount)
-            };
-
-            return this.Ok(l_Response);
+        if (l_SignInResult.Succeeded is false) {
+            return this.Unauthorized(p_SignIn);
         }
 
-        return this.Unauthorized(p_SignIn);
+        var l_SignedInAccount = await p_UserManager.FindByEmailAsync(p_SignIn.Email);
+        if (l_SignedInAccount is null) {
+            return this.Unauthorized(new { Message = "Authentication failed. Please check your credentials and try again." });
+        }
+
+        var l_JwtResult = await p_JwtService.GenerateTokenAsync(l_SignedInAccount);
+        if (String.IsNullOrWhiteSpace(l_JwtResult.Token)) {
+            return this.BadRequest(
+                new { 
+                        Message = 
+                            "Token generation failed due to missing or invalid user claims. "
+                        +   "Please verify the account data and try again."
+                });
+        }
+
+        var l_Response = 
+            new SignInResponse {
+                    Jwt = l_JwtResult
+                ,   UserId = l_SignedInAccount.Id.ToString()
+                ,   Roles = await p_UserManager.GetRolesAsync(l_SignedInAccount)
+            };
+
+        return this.Ok(l_Response);
     }
 
     /// <summary>
@@ -127,13 +125,25 @@ public class AuthenticationController(
                 ,   UserName = p_SignUp.Email
             };
 
-        var l_AccountResult = await m_UserManager.CreateAsync(l_SignUpAccount, p_SignUp.Password);
-        if (l_AccountResult.Succeeded == true) {
-            return this.StatusCode(StatusCodes.Status201Created, new { l_AccountResult.Succeeded });
+        var l_AccountResult = await p_UserManager.CreateAsync(l_SignUpAccount, p_SignUp.Password);
+        if (l_AccountResult.Succeeded is true) {
+            var l_Response = 
+                    new SignUpResponse {
+                        Success = true
+                    ,   UserId = l_SignUpAccount.Id.ToString()
+                };
+            
+            return this.StatusCode(StatusCodes.Status201Created, l_Response);
         }
 
-        var l_Errors = l_AccountResult.Errors.Select(p_Error => new { p_Error.Code, p_Error.Description });
-        return this.BadRequest(new { Message = "Sign up failed", l_Errors });
+        var l_Errors = l_AccountResult.Errors.Select(p_Error => p_Error.Description);
+        var l_ErrorResponse = 
+                new SignUpResponse {
+                    Success = false
+                ,   Errors = l_Errors
+            };
+        
+        return this.BadRequest(l_ErrorResponse);
     }
 
     #endregion Public Async Methods

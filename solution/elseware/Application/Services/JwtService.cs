@@ -14,7 +14,7 @@ Everyware - Copyright © 2025 by CLS
 **** Created On:        25/08/2025
 ****
 **** Last Changed By:   Cristiano Luelli
-**** Last Changed On:   26/08/2025
+**** Last Changed On:   30/08/2025
 ****
 ********************************************************************************************************************************************
 
@@ -23,11 +23,11 @@ Everyware - Copyright © 2025 by CLS
 
 #region Usings
 
-using Elseware.Application.Dto.Responses;
 using Elseware.Application.Interfaces;
 using Elseware.Domain;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using Noware.Dto.Responses;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -40,8 +40,8 @@ namespace Elseware.Application.Services;
 /// Provides functionality for generating JSON Web Tokens (JWT) for authenticated user accounts.
 /// </summary>
 public class JwtService(
-    UserManager<Account> p_UserManager,
-    IConfiguration p_Configuration) : IJwtService {
+    UserManager<Account> p_UserManager
+,   IConfiguration p_Configuration) : IJwtService {
 
     #region Private Readonly Fields
 
@@ -49,12 +49,12 @@ public class JwtService(
     /// A <see cref="UserManager{Account}"/> instance providing support for user-related operations such as retrieving roles and identity
     /// information.
     /// </summary>
-    private readonly UserManager<Account> m_UserManager = p_UserManager;
+    private readonly UserManager<Account> userManager = p_UserManager;
 
     /// <summary>
     /// An <see cref="IConfiguration"/> instance providing access to application configuration settings, including JWT parameters.
     /// </summary>
-    private readonly IConfiguration m_Configuration = p_Configuration;
+    private readonly IConfiguration configuration = p_Configuration;
 
     #endregion Private Readonly Fields
 
@@ -69,7 +69,9 @@ public class JwtService(
     /// <returns>
     /// A <see cref="Task{JwtResult}"/> containing the generated token and its expiration timestamp.
     /// </returns>
-    public async Task<JwtResult> GenerateTokenAsync(Account p_Account) {
+    public async Task<JwtResult> GenerateTokenAsync(
+        Account p_Account) {
+
         if (String.IsNullOrWhiteSpace(p_Account.UserName)) {
             return new JwtResult();
         }
@@ -81,7 +83,7 @@ public class JwtService(
 
         var l_SecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(l_SecretKey));
         var l_Credentials = new SigningCredentials(l_SecurityKey, SecurityAlgorithms.HmacSha256);
-        var l_RoleNames = await m_UserManager.GetRolesAsync(p_Account);
+        var l_RoleNames = await userManager.GetRolesAsync(p_Account);
 
         var l_Claims = new List<Claim> {
             new(ClaimTypes.NameIdentifier, p_Account.Id.ToString()),
@@ -91,13 +93,13 @@ public class JwtService(
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         }.Union(l_RoleNames.Select(role => new Claim(ClaimTypes.Role, role)));
 
-        var l_TokenLifetimeString = m_Configuration["Jwt:TokenLifetimeMinutes"];
+        var l_TokenLifetimeString = configuration["Jwt:TokenLifetimeMinutes"];
         var l_TokenLifetime = Int32.TryParse(l_TokenLifetimeString, out var l_Minutes) ? l_Minutes : 10;
 
         var l_ExpiresAt = DateTime.UtcNow.AddMinutes(l_TokenLifetime);
         var l_JwtToken = new JwtSecurityToken(
-            issuer: m_Configuration["Jwt:Issuer"],
-            audience: m_Configuration["Jwt:Audience"],
+            issuer: configuration["Jwt:Issuer"],
+            audience: configuration["Jwt:Audience"],
             claims: l_Claims,
             notBefore: DateTime.UtcNow,
             expires: l_ExpiresAt,

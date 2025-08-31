@@ -1,0 +1,89 @@
+﻿
+@*
+Everyware - Copyright © 2025 by CLS
+
+********************************************************************************************************************************************
+****
+**** Project:           Someware
+****
+**** Module:            About.razor
+****
+**** Version:           2025.1.0.0001
+****
+**** Created By:        Cristiano Luelli
+**** Created On:        31/08/2025
+****
+**** Last Changed By:   Cristiano Luelli
+**** Last Changed On:   31/08/2025
+****
+**** Displays general information about the application.
+****
+********************************************************************************************************************************************
+
+Everyware - Copyright © 2025 by CLS
+*@
+
+@page "/about"
+
+<div class="auth-container">
+    <div class="auth-box">
+        <h1 class="auth-title">About @this.projectName</h1>
+
+        <p class="auth-description">
+            Copyright © 2025 by @this.projectCompany
+        </p>
+
+    </div>
+</div>
+
+
+@* 
+*******************************************************************************************************************************************
+****
+**** Defines the logic and interaction handlers for the About page.
+****
+*******************************************************************************************************************************************
+*@
+
+@code {
+
+    #region Private Fields
+
+    /// <summary>
+    /// A <see cref="String"/> instance representing the configured display name of the copyright company.
+    /// </summary>
+    private String projectCompany = String.Empty;
+
+    /// <summary>
+    /// A <see cref="String"/> instance representing the configured display name of the project.
+    /// </summary>
+    private String projectName = String.Empty;
+
+    #endregion Private Fields
+
+    #region Private Properties
+
+    /// <summary>
+    /// Gets or sets the configuration of the application.
+    /// </summary>
+    [Inject]
+    private IConfiguration Configuration { get; set; } = null!;
+
+    #endregion Private Properties
+
+    #region Protected Override Methods
+
+    /// <summary>
+    /// Initializes the component by retrieving the project name and the project company from configuration.
+    /// </summary>
+    protected override void OnInitialized() {
+
+        this.projectName = Configuration["Project:Name"]
+            ?? throw new InvalidOperationException("Missing configuration for Project:Name");
+
+        this.projectCompany = Configuration["Project:Company"]
+            ?? throw new InvalidOperationException("Missing configuration for Project:Company");
+    }
+
+    #endregion Protected Override Methods
+}

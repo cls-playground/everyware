@@ -1,0 +1,53 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+
+	  <!-- Define custom build configurations -->
+	  <Configurations>Development;Staging;Production</Configurations>
+  </PropertyGroup>
+
+  <!-- Development configuration (replaces Debug) -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Development'">
+	  <BlazorEnvironment>Development</BlazorEnvironment>
+	  <DefineConstants>DEVELOPMENT</DefineConstants>
+  </PropertyGroup>
+
+  <!-- Staging configuration (custom) -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Staging'">
+	<BlazorEnvironment>Staging</BlazorEnvironment>
+	<DefineConstants>STAGING</DefineConstants>
+  </PropertyGroup>
+
+  <!-- Production configuration (replaces Release) -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Production'">
+	  <BlazorEnvironment>Production</BlazorEnvironment>
+	  <DefineConstants>PRODUCTION</DefineConstants>
+  </PropertyGroup>
+	
+  <ItemGroup>
+    <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.8" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.1" />
+    <PackageReference Include="Serilog" Version="4.3.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\noware\Noware.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
+</Project>

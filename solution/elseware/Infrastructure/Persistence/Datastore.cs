@@ -56,7 +56,6 @@ public class Datastore(
     #region Protected Override Methods
 
     /// <summary>
-    /// <summary>
     /// Configures the entity framework model for the current context.
     /// </summary>
     /// <param name="p_ModelBuilder">
