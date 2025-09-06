@@ -1,0 +1,14 @@
+{
+  "Project": {
+    "Name": "goalware",
+    "Title": "Goalware",
+    "Company": "CLS",
+    "Icon": "goalware-icon",
+    "Logo": "goalware-logo"
+  },
+  "ApiBaseUrl": {
+    "Development": "https://localhost:7001",
+    "Staging": "https://staging.elseware.com",
+    "Production": "https://elseware.com"
+  }
+}

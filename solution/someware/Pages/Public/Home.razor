@@ -2,7 +2,7 @@
 @*
 Everyware - Copyright © 2025 by CLS
 
-*******************************************************************************************************************************************
+********************************************************************************************************************************************
 ****
 **** Project:           Someware
 ****
@@ -14,11 +14,11 @@ Everyware - Copyright © 2025 by CLS
 **** Created On:        27/08/2025
 ****
 **** Last Changed By:   Cristiano Luelli
-**** Last Changed On:   31/08/2025
+**** Last Changed On:   03/09/2025
 ****
 **** Defines the Home page of the application.
 ****
-*******************************************************************************************************************************************
+********************************************************************************************************************************************
 
 Everyware - Copyright © 2025 by CLS
 *@
@@ -27,17 +27,17 @@ Everyware - Copyright © 2025 by CLS
 
 <PageTitle>Home</PageTitle>
 
-<div class="center-content">
+<div class="home-container">
     <img src=@this.projectLogo />
 </div>
 
 
 @* 
-*******************************************************************************************************************************************
+********************************************************************************************************************************************
 ****
 **** Defines the logic and interaction handlers for the Home page.
 ****
-*******************************************************************************************************************************************
+********************************************************************************************************************************************
 *@
 
 @code {
@@ -52,7 +52,7 @@ Everyware - Copyright © 2025 by CLS
     /// <summary>
     /// A <see cref="String"/> instance representing the configured display name of the project.
     /// </summary>
-    private String projectName = String.Empty;
+    private String projectTitle = String.Empty;
 
     #endregion Private Fields
 
@@ -69,17 +69,23 @@ Everyware - Copyright © 2025 by CLS
     #region Protected Override Methods
 
     /// <summary>
-    /// Initializes the component by retrieving the project name and logo filename from configuration.
+    /// Initializes the component.
     /// </summary>
+    /// <remarks>
+    /// Retrieves the project name, title and logo filename from the configuration file.
+    /// </remarks>
     protected override void OnInitialized() {
 
-        this.projectName = Configuration["Project:Name"]
+        var l_ProjectName = Configuration["Project:Name"]
             ?? throw new InvalidOperationException("Missing configuration for Project:Name");
 
-        var l_ProjectLogo = Configuration["Project:Logo"] 
+        this.projectTitle = Configuration["Project:Title"]
+            ?? throw new InvalidOperationException("Missing configuration for Project:Title");
+
+        var l_ProjectLogo = Configuration["Project:Logo"]
             ?? throw new InvalidOperationException("Missing configuration for Project:Logo");
 
-        this.projectLogo = $"/images/{l_ProjectLogo}.png";
+        this.projectLogo = $"projects/{l_ProjectName}/images/{l_ProjectLogo}.png";
     }
 
     #endregion Protected Override Methods

@@ -1,4 +1,28 @@
+
+<!--
+Everyware - Copyright © 2025 by CLS.
+
+********************************************************************************************************************************************
+****
+**** Project:           Someware
+****
+**** Module:            index.html
+****
+**** Version:           2025.1.0.0001
+****
+**** Created By:        Cristiano Luelli
+**** Created On:        02/09/2025
+****
+**** Last Changed By:   Cristiano Luelli
+**** Last Changed On:   06/09/2025
+****
+********************************************************************************************************************************************
+
+Everyware - Copyright © 2025 by CLS.
+-->
+
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
@@ -6,31 +30,151 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Someware</title>
     <base href="/" />
+
+    <!-- Loads CSS stylesheets. -->
     <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="css/app.css" />
+    <link rel="stylesheet" href="css/loader.css" />
+    <link rel="stylesheet" href="Someware.styles.css" />
+
+    <!-- Loads icons and manifest. -->
     <link rel="icon" type="image/png" href="favicon.png" />
-    <link href="Someware.styles.css" rel="stylesheet" />
-    <link href="manifest.webmanifest" rel="manifest" />
+    <link rel="manifest" href="manifest.webmanifest" />
     <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png" />
     <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png" />
 </head>
 
 <body>
+
+    <!-- Displays initial loading screen. -->
     <div id="app">
-        <svg class="loading-progress">
-            <circle r="40%" cx="50%" cy="50%" />
-            <circle r="40%" cx="50%" cy="50%" />
-        </svg>
-        <div class="loading-progress-text"></div>
+        <div class="loader-section">
+            <img id="project-icon" class="loader-icon" />
+            <h1 id="project-title" class="loader-title" style="font-weight: bold;"></h1>
+            <div class="loader mt-5 mb-5">
+                <div class="loader-dot dot1"></div>
+                <div class="loader-dot dot2"></div>
+                <div class="loader-dot dot3"></div>
+            </div>
+            <div id="loadingText">Initializing application...</div>
+        </div>
     </div>
 
+    <!-- Displays Blazor error message UI. -->
     <div id="blazor-error-ui">
         An unhandled error has occurred.
         <a href="." class="reload">Reload</a>
         <span class="dismiss">🗙</span>
     </div>
+
+    <!-- Extracts the "project" parameter from query string and updates title. -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const l_Params = new URLSearchParams(window.location.search);
+            let l_ProjectName = l_Params.get("project");
+
+            // Validates parameter.
+            if (l_ProjectName === null || l_ProjectName.trim() === "") {
+                document.body.innerHTML = `
+                    <div class="message message-full-screen">
+                        <h1 class="message-icon">💥</h1>
+                        <h1 class="message-title">Missing Arguments</h1>
+                        <p class="message-text">Unable to retrieve project information.</p>
+                        <p class="message-text">The application cannot continue and has been terminated.</p>
+                        <p class="message-hint">Please restart with a valid <code>?project=</code> parameter.</p>
+                    </div>
+                `;
+
+                // Aborts application loading.
+                throw new Error("Missing 'project' query string parameter.");
+            }
+
+            window.getProjectName = function () {
+                return l_ProjectName;
+            }
+
+            // Builds JSON file path based on project name.
+            const l_JsonPath = `projects/${encodeURIComponent(l_ProjectName)}/settings/project.json`;
+
+            // Loads JSON file and updates title.
+            fetch(l_JsonPath)
+                .then(p_Response => {
+                    if (!p_Response.ok) {
+                        throw new Error(`Cannot load JSON for project: ${l_ProjectName}`);
+                    }
+
+                    return p_Response.json();
+                })
+                .then(p_Data => {
+                    const l_ProjectTitle = p_Data.Project.Title;
+                    if (l_ProjectTitle === null || l_ProjectTitle.trim() === "") {
+                        throw new Error(`Missing parameter [Title] for project: ${l_ProjectName}`);
+                    }
+
+                    const l_TitleElement = document.getElementById("project-title");
+                    if (l_TitleElement) {
+                        l_TitleElement.textContent = l_ProjectTitle;
+                    }
+
+                    const l_ProjectIcon = p_Data.Project.Icon;
+                    if (l_ProjectIcon === null || l_ProjectIcon.trim() === "") {
+                        throw new Error(`Missing parameter [Icon] for project: ${l_ProjectName}`);
+                    }
+
+                    const l_IconPath = `projects/${encodeURIComponent(l_ProjectName)}/images/${l_ProjectIcon}.png`;
+                    const l_IconElement = document.getElementById("project-icon");
+                    if (l_IconElement) {
+                        l_IconElement.src = l_IconPath;
+                    }
+                })
+                .catch(p_Error => {
+                    console.error(p_Error);
+
+                    // Fallback: show project name if JSON fails.
+                    const l_TitleElement = document.getElementById("project-title");
+                    if (l_TitleElement) {
+                        l_TitleElement.textContent = l_ProjectName;
+                    }
+                });
+        });
+    </script>
+
+    <!-- Overrides fetch to display loading progress. -->
+    <script>
+        (function () {
+            const l_MaxProgress = 100;
+            const l_StandardFetch = fetch;
+
+            let l_Total = 0;
+            let l_Loaded = 0;
+
+            fetch = function (p_Url, p_Options) {
+                l_Total++;
+
+                const l_Promise = l_StandardFetch(p_Url, p_Options);
+
+                l_Promise.then((l_Data) => {
+                    const l_Element = document.getElementById("loadingText");
+                    if (l_Element) {
+                        l_Loaded++;
+                        const l_Progress = Math.floor((l_Loaded / l_Total) * l_MaxProgress);
+                        const l_Url = new URL(l_Data.url);
+                        l_Element.innerHTML = "Loading <b>" + l_Url.pathname + "</b> (" + l_Progress + "% completed)";
+                    }
+                });
+
+                return l_Promise;
+            }
+        })();
+    </script>
+
+    <!-- Loads the Blazor WebAssembly runtime. -->
     <script src="_framework/blazor.webassembly.js"></script>
-    <script>navigator.serviceWorker.register('service-worker.js');</script>
+
+    <!-- Registers service worker for offline support. -->
+    <script>
+        navigator.serviceWorker.register('service-worker.js');
+    </script>
 </body>
 
 </html>

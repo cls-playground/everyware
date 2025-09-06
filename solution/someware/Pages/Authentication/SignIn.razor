@@ -2,7 +2,7 @@
 @*
 Everyware - Copyright © 2025 by CLS
 
-*******************************************************************************************************************************************
+********************************************************************************************************************************************
 ****
 **** Project:           Someware
 ****
@@ -14,11 +14,11 @@ Everyware - Copyright © 2025 by CLS
 **** Created On:        27/08/2025
 ****
 **** Last Changed By:   Cristiano Luelli
-**** Last Changed On:   31/08/2025
+**** Last Changed On:   06/09/2025
 ****
 **** Defines the user login interface and logic.
 ****
-*******************************************************************************************************************************************
+********************************************************************************************************************************************
 
 Everyware - Copyright © 2025 by CLS
 *@
@@ -42,18 +42,18 @@ Everyware - Copyright © 2025 by CLS
             <div class="col-lg-6">
                 <EditForm Model="this.signInRequest" asp-route-returnUrl="@this.ReturnUrl" method="post" OnValidSubmit="this.SignInUser" FormName="login" Context="formContext">
                     <DataAnnotationsValidator />
-                    <h2>Provide your credentials.</h2>
+                    <h3>Provide your credentials.</h3>
                     <hr />
                     <ValidationSummary class="text-danger" role="alert" />
                     <div class="form-floating mb-3">
                         <InputText @bind-Value="this.signInRequest.Email" id="txtEmail" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
                         <label for="txtEmail">Email</label>
-                        <ValidationMessage For="() => this.signInRequest.Email" class="text-danger" />
+                        @* <ValidationMessage For="() => this.signInRequest.Email" class="text-danger" /> *@
                     </div>
                     <div class="form-floating mb-3">
                         <InputText type="password" @bind-Value="this.signInRequest.Password" id="txtPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
                         <label for="txtPassword">Password</label>
-                        <ValidationMessage For="() => this.signInRequest.Password" class="text-danger" />
+                        @* <ValidationMessage For="() => this.signInRequest.Password" class="text-danger" /> *@
                     </div>
                     <button type="submit" class="w-100 btn btn-lg btn-primary">Login</button>
 
@@ -70,13 +70,15 @@ Everyware - Copyright © 2025 by CLS
     </Authorized>
 </AuthorizeView>
 
+
 @* 
-*******************************************************************************************************************************************
+********************************************************************************************************************************************
 ****
 **** Defines the logic and interaction handlers for the user login page.
 ****
-*******************************************************************************************************************************************
+********************************************************************************************************************************************
 *@
+
 @code {
 
     #region Private Fields

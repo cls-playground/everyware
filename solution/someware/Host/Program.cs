@@ -14,7 +14,7 @@ Everyware - Copyright © 2025 by CLS
 **** Created On:        27/08/2025
 ****
 **** Last Changed By:   Cristiano Luelli
-**** Last Changed On:   31/08/2025
+**** Last Changed On:   03/09/2025
 ****
 ********************************************************************************************************************************************
 
@@ -30,6 +30,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Someware.Authentication;
 using Someware.Services.Authentication;
 using Someware.Services.Navigation;
+using Someware.Shared.Extensions;
 
 #endregion Usings
 
@@ -60,6 +61,9 @@ public class Program {
 
         var l_WebAssemblyHostBuilder = WebAssemblyHostBuilder.CreateDefault(p_Arguments);
 
+        // Retrieves the "project" parameter from JavaScript.
+        var l_ProjectName = await l_WebAssemblyHostBuilder.GetProjectName();
+
         // Enables structured logging for diagnostics and telemetry.
         l_WebAssemblyHostBuilder.Logging.SetMinimumLevel(LogLevel.Information);
 
@@ -73,24 +77,22 @@ public class Program {
         l_WebAssemblyHostBuilder.Services.AddScoped<JwtAuthenticationStateProvider>();
         l_WebAssemblyHostBuilder.Services.AddScoped<RedirectService>();
 
-        using var l_LocalHttp = new HttpClient();
-        l_LocalHttp.BaseAddress = new(l_WebAssemblyHostBuilder.HostEnvironment.BaseAddress);
+        // Loads configuration based on the project name.
+        var l_Configuration = await l_WebAssemblyHostBuilder.LoadConfigurationAsync(l_ProjectName);
 
-        await using var l_Stream = await l_LocalHttp.GetStreamAsync("settings/appsettings.json");
-        l_WebAssemblyHostBuilder.Configuration.AddJsonStream(l_Stream);
-        var l_Configuration = l_WebAssemblyHostBuilder.Configuration;
-
+        // Registers the HttpClient for API communication.
         var l_Environment = l_WebAssemblyHostBuilder.HostEnvironment.Environment;
         var l_ApiBaseUrl = l_Configuration[$"ApiBaseUrl:{l_Environment}"];
-        if (String.IsNullOrWhiteSpace(l_ApiBaseUrl))
-        {
+        if (String.IsNullOrWhiteSpace(l_ApiBaseUrl)) {
             throw new InvalidOperationException($"ApiBaseUrl is missing for '{l_Environment}' environment.");
         }
 
         l_WebAssemblyHostBuilder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(l_ApiBaseUrl) });
 
+        // Builds the host to access registered services.
         var l_Host = l_WebAssemblyHostBuilder.Build();
 
+        // Runs the application.
         await l_Host.RunAsync();
     }
 

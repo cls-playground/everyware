@@ -14,7 +14,7 @@ Everyware - Copyright © 2025 by CLS
 **** Created On:        27/08/2025
 ****
 **** Last Changed By:   Cristiano Luelli
-**** Last Changed On:   31/08/2025
+**** Last Changed On:   06/09/2025
 ****
 **** Defines the layout structure for the application shell.
 ****
@@ -26,19 +26,16 @@ Everyware - Copyright © 2025 by CLS
 @inherits LayoutComponentBase
 
 @using Microsoft.AspNetCore.Components.Authorization
+@using Someware.Components.Navigation
 
 <div class="page">
     <div class="sidebar">
         <NavMenu />
     </div>
-
     <main>
         <div class="top-row px-4">
-            <NavLink class="nav-link" href="/about">
-                <span class="bi bi-info-circle-main-layout" aria-hidden="true"></span> About
-            </NavLink>
+            <NavButton Route="about" Icon="bi bi-info-circle-main-layout" Style="Info" Label="About" />
         </div>
-
         <article class="content px-4">
             @Body
         </article>

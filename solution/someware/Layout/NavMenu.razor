@@ -14,7 +14,7 @@ Everyware - Copyright © 2025 by CLS
 **** Created On:        27/08/2025
 ****
 **** Last Changed By:   Cristiano Luelli
-**** Last Changed On:   31/08/2025
+**** Last Changed On:   06/09/2025
 ****
 **** Defines the navigation menu component for the Someware application.
 ****
@@ -26,6 +26,7 @@ Everyware - Copyright © 2025 by CLS
 @implements IDisposable
 
 @using Microsoft.AspNetCore.Components.Authorization
+@using Someware.Components.Navigation
 @using Someware.Services
 @using Someware.Services.Authentication
 @using Someware.Services.Navigation
@@ -33,10 +34,9 @@ Everyware - Copyright © 2025 by CLS
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">
-            <img src="@this.projectIcon"
-                 alt="App Icon"
-                 class="navbar-brand-icon" />
-            @this.projectName</a>
+            <img src="@this.projectIcon" alt="App Icon" class="navbar-brand-icon" />
+            @this.projectTitle
+        </a>
     </div>
 </div>
 
@@ -44,54 +44,18 @@ Everyware - Copyright © 2025 by CLS
 
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
     <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="auth">
-                <span class="bi bi-lock-nav-menu" aria-hidden="true"></span> Auth Required
-            </NavLink>
-        </div>
-
+        <NavButton Route="" Icon="bi bi-house-door-fill-nav-menu" Label="Home" />
+        <NavButton Route="counter" Icon="bi bi-plus-square-fill-nav-menu" Label="Counter" />
+        <NavButton Route="weather" Icon="bi bi-list-nested-nav-menu" Label="Weather" />
+        <NavButton Route="auth" Icon="bi bi-lock-nav-menu" Label="Auth Required" />
         <AuthorizeView>
             <Authorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Account/Manage">
-                        <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> @context.User.Identity?.Name
-                    </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <button type="button" class="nav-link" @onclick="SignOut">
-                        <span class="bi bi-arrow-bar-left-nav-menu" aria-hidden="true"></span> Logout
-                    </button>
-                </div>
+                <NavButton Route="account/manage" Icon="bi bi-person-fill-nav-menu" Label="@context.User.Identity?.Name" />
+                <NavButton Icon="bi bi-arrow-bar-left-nav-menu" OnClick="@this.SignOut" Label="Logout" />
             </Authorized>
             <NotAuthorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="signup">
-                        <span class="bi bi-person-nav-menu" aria-hidden="true"></span> Register
-                    </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="signin">
-                        <span class="bi bi-person-badge-nav-menu" aria-hidden="true"></span> Login
-                    </NavLink>
-                </div>
+                <NavButton Route="signup" Icon="bi bi-person-nav-menu" Label="Register" />
+                <NavButton Route="signin" Icon="bi bi-person-badge-nav-menu" Label="Login" />
             </NotAuthorized>
         </AuthorizeView>
     </nav>
@@ -99,15 +63,14 @@ Everyware - Copyright © 2025 by CLS
 
 
 @* 
-*******************************************************************************************************************************************
+********************************************************************************************************************************************
 ****
 **** Defines the logic and interaction handlers for the main navigation menu.
 ****
-*******************************************************************************************************************************************
+********************************************************************************************************************************************
 *@
 
 @code {
-
     #region Private Fields
 
     /// <summary>
@@ -123,7 +86,7 @@ Everyware - Copyright © 2025 by CLS
     /// <summary>
     /// A <see cref="String"/> instance representing the configured display name of the project.
     /// </summary>
-    private String projectName = String.Empty;
+    private String projectTitle = String.Empty;
 
     #endregion Private Fields
 
@@ -182,13 +145,16 @@ Everyware - Copyright © 2025 by CLS
     /// </summary>
     protected override void OnInitialized() {
 
-        this.projectName = this.Configuration["Project:Name"]
+        var l_ProjectName = Configuration["Project:Name"]
             ?? throw new InvalidOperationException("Missing configuration for Project:Name");
+
+        this.projectTitle = this.Configuration["Project:Title"]
+            ?? throw new InvalidOperationException("Missing configuration for Project:Title");
 
         var l_ProjectIcon = this.Configuration["Project:Icon"]
             ?? throw new InvalidOperationException("Missing configuration for Project:Icon");
 
-        this.projectIcon = $"/images/{l_ProjectIcon}.png";
+        this.projectIcon = $"projects/{l_ProjectName}/images/{l_ProjectIcon}.png";
 
         this.currentUrl = this.NavigationManager.ToBaseRelativePath(this.NavigationManager.Uri);
         this.NavigationManager.LocationChanged += this.OnLocationChanged;

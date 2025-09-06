@@ -14,7 +14,7 @@ Everyware - Copyright © 2025 by CLS
 **** Created On:        31/08/2025
 ****
 **** Last Changed By:   Cristiano Luelli
-**** Last Changed On:   31/08/2025
+**** Last Changed On:   06/09/2025
 ****
 **** Displays general information about the application.
 ****
@@ -25,24 +25,22 @@ Everyware - Copyright © 2025 by CLS
 
 @page "/about"
 
-<div class="auth-container">
-    <div class="auth-box">
-        <h1 class="auth-title">About @this.projectName</h1>
+<PageTitle>About</PageTitle>
 
-        <p class="auth-description">
-            Copyright © 2025 by @this.projectCompany
-        </p>
-
-    </div>
+<div>
+    <h1>About @this.projectTitle</h1>
+    <p>
+        Copyright © 2025 by @this.projectCompany
+    </p>
 </div>
 
 
 @* 
-*******************************************************************************************************************************************
+********************************************************************************************************************************************
 ****
 **** Defines the logic and interaction handlers for the About page.
 ****
-*******************************************************************************************************************************************
+********************************************************************************************************************************************
 *@
 
 @code {
@@ -57,7 +55,7 @@ Everyware - Copyright © 2025 by CLS
     /// <summary>
     /// A <see cref="String"/> instance representing the configured display name of the project.
     /// </summary>
-    private String projectName = String.Empty;
+    private String projectTitle = String.Empty;
 
     #endregion Private Fields
 
@@ -78,11 +76,11 @@ Everyware - Copyright © 2025 by CLS
     /// </summary>
     protected override void OnInitialized() {
 
-        this.projectName = Configuration["Project:Name"]
-            ?? throw new InvalidOperationException("Missing configuration for Project:Name");
-
         this.projectCompany = Configuration["Project:Company"]
             ?? throw new InvalidOperationException("Missing configuration for Project:Company");
+
+        this.projectTitle = Configuration["Project:Title"]
+            ?? throw new InvalidOperationException("Missing configuration for Project:Name");
     }
 
     #endregion Protected Override Methods

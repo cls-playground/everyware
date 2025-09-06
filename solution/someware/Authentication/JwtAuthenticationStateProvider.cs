@@ -14,7 +14,7 @@ Everyware - Copyright © 2025 by CLS
 **** Created On:        27/08/2025
 ****
 **** Last Changed By:   Cristiano Luelli
-**** Last Changed On:   31/08/2025
+**** Last Changed On:   05/09/2025
 ****
 ********************************************************************************************************************************************
 
@@ -74,6 +74,10 @@ public class JwtAuthenticationStateProvider(
         var l_TokenHandler = new JwtSecurityTokenHandler();
 
         try {
+
+            //// Simulates a delay to see Authorizing view in action.
+            //await Task.Delay(2000);
+
             var l_JwtToken = l_TokenHandler.ReadJwtToken(l_Token);
             var l_Expiration = l_JwtToken.ValidTo;
             if (l_Expiration < DateTime.UtcNow.AddSeconds(-30)) {

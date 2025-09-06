@@ -1,5 +1,11 @@
 ﻿@page "/weather"
-@inject HttpClient Http
+
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components
+
+@inject NavigationManager navigationManager
+
+@attribute [Authorize]
 
 <PageTitle>Weather</PageTitle>
 
@@ -36,11 +42,15 @@ else
 }
 
 @code {
-    
+
     private WeatherForecast[]? forecasts;
 
     protected override async Task OnInitializedAsync() {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
+        var localClient = new HttpClient {
+            BaseAddress = new Uri(this.navigationManager.BaseUri)
+        }; 
+        
+        forecasts = await localClient.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
     }
 
     public class WeatherForecast(

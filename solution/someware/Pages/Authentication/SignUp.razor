@@ -2,7 +2,7 @@
 @*
 Everyware - Copyright © 2025 by CLS
 
-*******************************************************************************************************************************************
+********************************************************************************************************************************************
 ****
 **** Project:           Someware
 ****
@@ -14,11 +14,11 @@ Everyware - Copyright © 2025 by CLS
 **** Created On:        27/08/2025
 ****
 **** Last Changed By:   Cristiano Luelli
-**** Last Changed On:   31/08/2025
+**** Last Changed On:   06/09/2025
 ****
 **** Defines the user registration interface and logic.
 ****
-*******************************************************************************************************************************************
+********************************************************************************************************************************************
 
 Everyware - Copyright © 2025 by CLS
 *@
@@ -38,7 +38,7 @@ Everyware - Copyright © 2025 by CLS
     <div class="col-lg-6">
         <EditForm Model="this.signUpRequest" asp-route-returnUrl="@this.ReturnUrl" method="post" OnValidSubmit="this.SignUpUser" FormName="register">
             <DataAnnotationsValidator />
-            <h2>Create a new account.</h2>
+            <h3>Create a new account.</h3>
             <hr />
             <ValidationSummary class="text-danger" role="alert" />
             <div class="form-floating mb-3">
@@ -61,31 +61,23 @@ Everyware - Copyright © 2025 by CLS
     </div>
 </div>
 
+
 @* 
-*******************************************************************************************************************************************
+********************************************************************************************************************************************
 ****
 **** Defines the logic and interaction handlers for the user registration page.
 ****
-*******************************************************************************************************************************************
+********************************************************************************************************************************************
 *@
+
 @code {
 
     #region Private Fields
-
-    // /// <summary>
-    // /// A <see cref="Boolean"/> structure indicating whether the sign-up attempt failed.
-    // /// </summary>
-    // private Boolean attemptFailed;
 
     /// <summary>
     /// A <see cref="SignUpRequest"/> instance representing credentials provided by the user.
     /// </summary>
     private SignUpRequest signUpRequest = new();
-
-    // /// <summary>
-    // /// A <see cref="Boolean"/> structure indicating whether the sign-up attempt was successful.
-    // /// </summary>
-    // private Boolean signedUpWithSuccess;
 
     #endregion Private Fields
 
