@@ -1,0 +1,109 @@
+﻿
+@*
+Everyware - Copyright © 2025 by CLS
+
+********************************************************************************************************************************************
+****
+**** Project:           Someware
+****
+**** Module:            App.razor
+****
+**** Version:           2025.1.0.0001
+****
+**** Created By:        Cristiano Luelli
+**** Created On:        27/08/2025
+****
+**** Last Changed By:   Cristiano Luelli
+**** Last Changed On:   06/09/2025
+****
+**** Defines the root component of the application, handling routing, layout resolution and authentication state propagation.
+****
+********************************************************************************************************************************************
+
+Everyware - Copyright © 2025 by CLS
+*@
+
+@using Microsoft.AspNetCore.Components.Authorization
+
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(App).Assembly">
+        <Found Context="routeData">
+            <ErrorBoundary @ref="this.errorBoundary">
+                <ChildContent>
+                    <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                        <NotAuthorized>
+                            <div class="message">
+                                <h1 class="message-icon">🧙‍♂️</h1>
+                                <h1 class="message-title">403 - You Shall Not Pass</h1>
+                                <p class="message-text">You are not allowed to access this page.</p>
+                                <p class="message-hint">Please identify yourself.</p>
+                            </div>
+                        </NotAuthorized>
+                        <Authorizing>
+                            <div class="message">
+                                <h1 class="message-icon">🔐</h1>
+                                <h1 class="message-title">Authorizing</h1>
+                                <p class="message-text">I swear this won't take too long.</p>
+                                <p class="message-hint">Please be patient.</p>
+                            </div>
+                        </Authorizing>
+                    </AuthorizeRouteView>
+                </ChildContent>
+                <ErrorContent>
+                    <LayoutView Layout="@typeof(MainLayout)">
+                        <div class="message">
+                            <h1 class="message-icon">💥</h1>
+                            <h1 class="message-title">Something went wrong...</h1>
+                            <p class="message-text">...but we're already working on it.</p>
+                            <p class="message-hint">Help is on the way.</p>
+                        </div>
+                    </LayoutView>
+                </ErrorContent>
+            </ErrorBoundary>
+        </Found>
+        <NotFound>
+            <PageTitle>Not found</PageTitle>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <div class="message">
+                    <h1 class="message-icon">👻</h1>
+                    <h1 class="message-title">404 – R.I.P.</h1>
+                    <p class="message-text">This page is no longer among us.</p>
+                    <p class="message-hint">Please keep the faith.</p>
+                </div>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>
+
+
+@* 
+********************************************************************************************************************************************
+****
+**** Defines the logic and interaction handlers for the root application component.
+****
+********************************************************************************************************************************************
+*@
+
+@code {
+
+    #region Private Fields
+
+    /// <summary>
+    /// An instance of <see cref="ErrorBoundary"/> representing the global error handler.
+    /// </summary>
+    private ErrorBoundary? errorBoundary;
+
+    #endregion Private Fields
+
+    #region Protected Override Methods
+
+    /// <summary>
+    /// Gets called when route parameters change.
+    /// Recovers the <see cref="ErrorBoundary"/> to allow re-rendering after an error.
+    /// </summary>
+    protected override void OnParametersSet()
+
+    =>  this.errorBoundary?.Recover();
+
+    #endregion Protected Override Methods
+}

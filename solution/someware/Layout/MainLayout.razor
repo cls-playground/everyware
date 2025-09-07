@@ -1,0 +1,43 @@
+﻿
+@*
+Everyware - Copyright © 2025 by CLS
+
+********************************************************************************************************************************************
+****
+**** Project:           Someware
+****
+**** Module:            MainLayout.razor
+****
+**** Version:           2025.1.0.0001
+****
+**** Created By:        Cristiano Luelli
+**** Created On:        27/08/2025
+****
+**** Last Changed By:   Cristiano Luelli
+**** Last Changed On:   06/09/2025
+****
+**** Defines the layout structure for the application shell.
+****
+********************************************************************************************************************************************
+
+Everyware - Copyright © 2025 by CLS
+*@
+
+@inherits LayoutComponentBase
+
+@using Microsoft.AspNetCore.Components.Authorization
+@using Someware.Components.Navigation
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+    <main>
+        <div class="top-row px-4">
+            <NavButton Route="about" Icon="bi bi-info-circle-main-layout" Style="Info" Label="About" />
+        </div>
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>

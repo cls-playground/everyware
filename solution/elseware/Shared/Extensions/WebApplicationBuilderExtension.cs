@@ -14,7 +14,7 @@ Everyware - Copyright © 2025 by CLS
 **** Created On:        21/08/2025
 ****
 **** Last Changed By:   Cristiano Luelli
-**** Last Changed On:   26/08/2025
+**** Last Changed On:   31/08/2025
 ****
 ********************************************************************************************************************************************
 
@@ -28,6 +28,7 @@ using Elseware.Application.Services;
 using Elseware.Diagnostics;
 using Elseware.Domain;
 using Elseware.Infrastructure.Persistence;
+using Elseware.Infrastructure.Persistence.Design;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -59,7 +60,7 @@ public static class WebApplicationBuilderExtension {
     public static WebApplicationBuilder SetupServices(
         this WebApplicationBuilder p_This)
 
-    => p_This
+    =>  p_This
             .LoadConfiguration()
             .ConfigureServices()
             .ConfigureCors()
@@ -68,6 +69,10 @@ public static class WebApplicationBuilderExtension {
             .ConfigureAuthentication()
             .ConfigureRouting()
             .ConfigureCustomServices();
+
+    #endregion Public Static Methods
+
+    #region Private Static Methods
 
     /// <summary>
     /// Configures JWT-based authentication using settings from the application configuration and environment variables.
@@ -94,15 +99,15 @@ public static class WebApplicationBuilderExtension {
                 p_Options => 
                     p_Options.TokenValidationParameters =
                         new TokenValidationParameters {
-                            ValidateIssuer = true
-                        ,   ValidIssuer = p_This.Configuration.GetSection("Jwt:Issuer").Get<String>()
-                        ,   ValidateAudience = true
-                        ,   ValidAudience = p_This.Configuration.GetSection("Jwt:Audience").Get<String>()
-                        ,   ValidateLifetime = true
-                        ,   ValidateIssuerSigningKey = true
-                        ,   IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(l_JwtSecretKey))
-                        ,   RequireExpirationTime = true
-                        ,   ClockSkew = TimeSpan.Zero
+                                ValidateIssuer = true
+                            ,   ValidIssuer = p_This.Configuration.GetSection("Jwt:Issuer").Get<String>()
+                            ,   ValidateAudience = true
+                            ,   ValidAudience = p_This.Configuration.GetSection("Jwt:Audience").Get<String>()
+                            ,   ValidateLifetime = true
+                            ,   ValidateIssuerSigningKey = true
+                            ,   IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(l_JwtSecretKey))
+                            ,   RequireExpirationTime = true
+                            ,   ClockSkew = TimeSpan.Zero
                         });
 
         return p_This;
@@ -132,19 +137,19 @@ public static class WebApplicationBuilderExtension {
         p_This.Services.AddCors(
             p_Options =>
                 p_Options.AddPolicy(
-                    "CorsPolicy"
-                , p_Policy => {
-                    var l_AllowedOrigins = p_This.Configuration.GetSection("Cors:AllowedOrigins").Get<String[]>();
-                    if (l_AllowedOrigins is null || l_AllowedOrigins.Length == 0) {
-                        throw new InvalidOperationException(
-                            "Startup failure: unable to initialize CORS policy due to missing or undefined configuration.");
-                    }
+                        "ElsewareCorsPolicy"
+                    ,   p_Policy => {
+                            var l_AllowedOrigins = p_This.Configuration.GetSection("Cors:AllowedOrigins").Get<String[]>();
+                            if (l_AllowedOrigins is null || l_AllowedOrigins.Length == 0) {
+                                throw new InvalidOperationException(
+                                    "Startup failure: unable to initialize CORS policy due to missing or undefined configuration.");
+                            }
 
-                    p_Policy
-                        .WithOrigins(l_AllowedOrigins)
-                        .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .AllowCredentials();
+                            p_Policy
+                                .WithOrigins(l_AllowedOrigins)
+                                .AllowAnyHeader()
+                                .AllowAnyMethod()
+                                .AllowCredentials();
                 }));
 
         return p_This;
@@ -188,7 +193,7 @@ public static class WebApplicationBuilderExtension {
                         l_ConnectionString
                     ,   p_SqlServerOptions => p_SqlServerOptions.MigrationsHistoryTable("DatastoreMigrations", "dbo"))
                 
-                    .ReplaceService<IHistoryRepository, DatastoreMigration>()
+                    .ReplaceService<IHistoryRepository, DatastoreHistoryRepository>()
 
                     .EnableSensitiveDataLogging()
                     .LogTo(Console.WriteLine, LogLevel.Information));
@@ -253,5 +258,5 @@ public static class WebApplicationBuilderExtension {
         return p_This;
     }
 
-    #endregion Public Static Methods
+    #endregion Private Static Methods
 }

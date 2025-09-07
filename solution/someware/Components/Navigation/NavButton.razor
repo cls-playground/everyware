@@ -1,0 +1,173 @@
+﻿
+@*
+Everyware - Copyright © 2025 by CLS
+
+********************************************************************************************************************************************
+****
+**** Project:           Someware
+****
+**** Module:            NavButton.razor
+****
+**** Version:           2025.1.00.0001
+****
+**** Created By:        Cristiano Luelli
+**** Created On:        04/09/2025
+****
+**** Last Changed By:   Cristiano Luelli
+**** Last Changed On:   06/09/2025
+****
+********************************************************************************************************************************************
+
+Everyware - Copyright © 2025 by CLS
+*@
+
+<div class="nav-button px-3">
+    <a class=@($"nav-button-option{this.GetStyleClass()}{this.GetActiveClass()}") @onclick="this.Navigate">
+        <span class="@this.Icon" aria-hidden="true"></span> @this.Label
+    </a>
+</div>
+
+@* 
+********************************************************************************************************************************************
+****
+**** Defines the logic and interaction handlers for the component.
+****
+********************************************************************************************************************************************
+*@
+
+@code {
+
+    #region Private Fields
+
+    /// <summary>
+    /// A <see cref="String"/> instance representing the current URL of the application.
+    /// </summary>
+    private String? currentUrl;
+
+    #endregion Private Fields
+
+    #region Public Properties
+
+    /// <summary>
+    /// Gets or sets the event callback invoked when the button is clicked (if any).
+    /// </summary>
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+
+    /// <summary>
+    /// Gets or sets the CSS classes for the icon to display.
+    /// </summary>
+    [Parameter]
+    public String Icon { get; set; } = String.Empty;
+
+    /// <summary>
+    /// Gets or sets the label to display.
+    /// </summary>
+    [Parameter]
+    public String Label { get; set; } = String.Empty;
+
+    /// <summary>
+    /// Gets or sets the route to navigate to.
+    /// </summary>
+    [Parameter]
+    public String? Route { get; set; } = null;
+
+    /// <summary>
+    /// Gets or sets the custom type of the component.
+    /// </summary>
+    [Parameter]
+    public String Style { get; set; } = String.Empty;
+
+    #endregion Public Properties
+
+    #region Private Injected Properties
+
+    /// <summary>
+    /// Gets or sets the navigation manager used to redirect the user.
+    /// </summary>
+    /// <remarks>
+    /// This property is injected by the Blazor framework at runtime.
+    /// </remarks>
+    [Inject]
+    private NavigationManager NavigationManager { get; set; } = null!;
+
+    #endregion Private Injected Properties
+
+    #region Public Methods
+
+    /// <summary>
+    /// Unsubscribes from location change events.
+    /// </summary>
+    public void Dispose() {
+
+        this.NavigationManager.LocationChanged -= this.OnLocationChanged;
+    }
+
+    #endregion Public Methods
+
+    #region Protected Override Methods
+
+    /// <summary>
+    /// Initializes the component and subscribes to location changes.
+    /// </summary>
+    protected override void OnInitialized() {
+
+        this.currentUrl = this.NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+        this.NavigationManager.LocationChanged += this.OnLocationChanged;
+    }
+
+    #endregion Protected Override Methods
+
+    #region Private Methods
+
+    /// <summary>
+    /// Retrieves the CSS class related to the active state of the component.
+    /// </summary>
+    private String? GetActiveClass() {
+
+        var l_Route = this.currentUrl?.Split('?')[0]?.Trim('/');
+        return l_Route == this.Route?.Trim('/') ? " active" : null;
+    }
+
+    /// <summary>
+    /// Retrieves the CSS class related to the <see cref="Style"/> property.
+    /// </summary>
+    private String? GetStyleClass()
+
+    => String.IsNullOrWhiteSpace(this.Style)
+        ? null
+        : $" {this.Style.ToLowerInvariant()}";
+
+    /// <summary>
+    /// Navigates to the specified route.
+    /// </summary>
+    private async void Navigate() {
+
+        if (this.Route is not null) {
+            this.NavigationManager.NavigateTo($"/{this.Route}", forceLoad: false);
+        }
+
+        if (this.OnClick.HasDelegate) {
+            await this.OnClick.InvokeAsync(null);
+        }
+    }
+
+    /// <summary>
+    /// Updates the current URL and refreshes the component.
+    /// </summary>
+    /// <param name="p_Sender">
+    /// A nullable <see cref="Object"/> instance representing the source of the event.
+    /// </param>
+    /// <param name="p_EventArgs">
+    /// A <see cref="LocationChangedEventArgs"/> instance representing the data of the event.
+    /// </param>
+    private void OnLocationChanged(
+        Object? p_Sender
+    ,   LocationChangedEventArgs p_EventArgs) {
+
+        this.currentUrl = this.NavigationManager.ToBaseRelativePath(p_EventArgs.Location);
+        this.StateHasChanged();
+    }
+
+    #endregion Private Methods
+}

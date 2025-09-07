@@ -14,7 +14,7 @@ Everyware - Copyright © 2025 by CLS
 **** Created On:        25/08/2025
 ****
 **** Last Changed By:   Cristiano Luelli
-**** Last Changed On:   26/08/2025
+**** Last Changed On:   27/08/2025
 ****
 ********************************************************************************************************************************************
 
@@ -23,8 +23,8 @@ Everyware - Copyright © 2025 by CLS
 
 #region Usings
 
-using Elseware.Application.Dto.Responses;
 using Elseware.Domain;
+using Noware.Dto.Responses;
 
 #endregion Usings
 

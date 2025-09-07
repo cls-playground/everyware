@@ -1,0 +1,147 @@
+﻿
+@*
+Everyware - Copyright © 2025 by CLS
+
+********************************************************************************************************************************************
+****
+**** Project:           Someware
+****
+**** Module:            SignIn.razor
+****
+**** Version:           2025.1.0.0001
+****
+**** Created By:        Cristiano Luelli
+**** Created On:        27/08/2025
+****
+**** Last Changed By:   Cristiano Luelli
+**** Last Changed On:   06/09/2025
+****
+**** Defines the user login interface and logic.
+****
+********************************************************************************************************************************************
+
+Everyware - Copyright © 2025 by CLS
+*@
+
+@page "/signin"
+
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Identity
+@using Noware.Dto.Requests
+@using Someware.Services
+@using Someware.Services.Authentication
+@using Someware.Services.Navigation
+
+<PageTitle>Login</PageTitle>
+
+<h1>Login</h1>
+
+<AuthorizeView>
+    <NotAuthorized>
+        <div class="row">
+            <div class="col-lg-6">
+                <EditForm Model="this.signInRequest" asp-route-returnUrl="@this.ReturnUrl" method="post" OnValidSubmit="this.SignInUser" FormName="login" Context="formContext">
+                    <DataAnnotationsValidator />
+                    <h3>Provide your credentials.</h3>
+                    <hr />
+                    <ValidationSummary class="text-danger" role="alert" />
+                    <div class="form-floating mb-3">
+                        <InputText @bind-Value="this.signInRequest.Email" id="txtEmail" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                        <label for="txtEmail">Email</label>
+                        @* <ValidationMessage For="() => this.signInRequest.Email" class="text-danger" /> *@
+                    </div>
+                    <div class="form-floating mb-3">
+                        <InputText type="password" @bind-Value="this.signInRequest.Password" id="txtPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                        <label for="txtPassword">Password</label>
+                        @* <ValidationMessage For="() => this.signInRequest.Password" class="text-danger" /> *@
+                    </div>
+                    <button type="submit" class="w-100 btn btn-lg btn-primary">Login</button>
+
+                    @if (this.hasAttemptedSignIn && this.signInResult is false) {
+                        <p class="my-3 text-danger">Sign in failed</p>
+                    }
+
+                </EditForm>
+            </div>
+        </div>
+    </NotAuthorized>
+    <Authorized>
+        <h4>Sign in successful</h4>
+    </Authorized>
+</AuthorizeView>
+
+
+@* 
+********************************************************************************************************************************************
+****
+**** Defines the logic and interaction handlers for the user login page.
+****
+********************************************************************************************************************************************
+*@
+
+@code {
+
+    #region Private Fields
+
+    /// <summary>
+    /// A <see cref="Boolean"/> structure indicating whether a sign-in attempt has been made.
+    /// </summary>
+    private Boolean hasAttemptedSignIn;
+
+    /// <summary>
+    /// A <see cref="SignInRequest"/> instance representing credentials provided by the user.
+    /// </summary>
+    private SignInRequest signInRequest = new();
+
+    /// <summary>
+    /// A <see cref="Boolean"/> structure indicating whether the sign-in attempt was successful.
+    /// </summary>
+    private Boolean signInResult;
+
+    #endregion Private Fields
+
+    #region Public Properties
+
+    /// <summary>
+    /// Gets or sets the return URL passed via query string.
+    /// </summary>
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public String? ReturnUrl { get; set; }
+
+    #endregion Public Properties
+
+    #region Private Properties
+
+    /// <summary>
+    /// Gets or sets the service used to validate credentials.
+    /// </summary>
+    [Inject]
+    private AuthenticationService AuthenticationService { get; set; } = null!;
+
+    /// <summary>
+    /// Gets or sets the service used to manage post-authentication navigation.
+    /// </summary>
+    [Inject]
+    private RedirectService RedirectManager { get; set; } = null!;
+
+    #endregion Private Properties
+
+    #region Private Async Methods
+
+    /// <summary>
+    /// Attempts to sign in the user using the provided credentials.
+    /// </summary>
+    private async Task SignInUser() {
+
+        this.signInResult = await this.AuthenticationService.SignInAsync(this.signInRequest);
+        if (this.signInResult is true) {
+            this.signInRequest = new();
+            this.RedirectManager.RedirectTo(this.ReturnUrl);
+        }
+
+        this.hasAttemptedSignIn = true;
+    }
+
+    #endregion Private Async Methods
+}

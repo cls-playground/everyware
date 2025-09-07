@@ -1,0 +1,189 @@
+
+/*
+Everyware - Copyright © 2025 by CLS
+
+********************************************************************************************************************************************
+****
+**** Project:           Someware
+****
+**** Module:            NavMenu.razor.css
+****
+**** Version:           2025.1.0.0001
+****
+**** Created By:        Cristiano Luelli
+**** Created On:        27/08/2025
+****
+**** Last Changed By:   Cristiano Luelli
+**** Last Changed On:   06/09/2025
+****
+**** Defines the styles for the navigation menu component.
+****
+********************************************************************************************************************************************
+*/
+
+
+/***********************/
+/**** NAVBAR HEADER ****/
+/***********************/
+
+/* Sets the minimum height and background color of the header area */
+.navbar.navbar-dark.top-row {
+    background-color: #444;
+    min-height: 3.5rem;
+}
+
+/* Sets the text color of the brand */
+.navbar-brand {
+    color: #fc0;
+    font-size: 1.2rem;
+}
+
+.navbar-brand-icon {
+    display: inline-block;
+    height: auto;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+    width: 1.5rem;
+}
+
+/*************************/
+/**** NAVBAR OPTIONS *****/
+/*************************/
+
+/* Sets the background color of the options area */
+.nav-scrollable {
+    background-color: #666;
+}
+
+/* Sets the base color of all navigation links */
+/*
+nav ::deep a.nav-link,
+nav ::deep button.nav-link {
+    color: rgb(0, 0, 0) !important;
+}
+*/
+
+    /* Sets the background and text color for hovered links */
+/*
+    nav ::deep a.nav-link:not(.active):hover,
+    nav ::deep button.nav-link:not(.active):hover {
+        background-color: rgba(240, 240, 240, 0.1);
+        color: #ecf0f1 !important;
+    }
+*/
+
+/* Sets the background and text color for active links */
+/*
+    nav ::deep a.nav-link.active,
+    nav ::deep a.nav-link.active:hover,
+    nav ::deep button.nav-link.active,
+    nav ::deep button.nav-link.active:hover {
+        background-color: rgb(200, 0, 0);
+        color: #ecf0f1 !important;
+    }
+    nav ::deep a.nav-link.active,
+    nav ::deep a.nav-link.active:hover,
+    nav ::deep a.nav-link.nav-link-button:active,
+    nav ::deep a.nav-link.nav-link-button:active:hover {
+        background-color: rgb(200, 0, 0);
+        color: #ecf0f1 !important;
+    }
+*/
+.navbar-toggler {
+    appearance: none;
+    background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") no-repeat center/1.75rem rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    cursor: pointer;
+    height: 2.5rem;
+    position: absolute;
+    right: 1rem;
+    top: 0.5rem;
+    width: 3.5rem;
+}
+
+.navbar-toggler:checked {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.top-row {
+    background-color: rgba(0,0,0,0.4);
+    min-height: 3.5rem;
+}
+/*
+.bi {
+    background-size: cover;
+    display: inline-block;
+    height: 1.25rem;
+    margin-right: 0.75rem;
+    position: relative;
+    top: -1px;
+    width: 1.25rem;
+}
+
+.nav-item {
+    font-size: 0.9rem;
+    padding-bottom: 0.5rem;
+}
+
+    .nav-item:first-of-type {
+        padding-top: 1rem;
+    }
+
+    .nav-item:last-of-type {
+        padding-bottom: 1rem;
+    }
+
+    .nav-item ::deep .nav-link {
+        align-items: center;
+        background: none;
+        border: none;
+        border-radius: 4px;
+        color: #d7d7d7;
+        display: flex;
+        height: 3rem;
+        line-height: 3rem;
+        width: 100%;
+    }
+
+.nav-item ::deep a.active {
+    background-color: rgba(255,255,255,0.37);
+    color: white;
+}
+
+.nav-item ::deep .nav-link:hover {
+    background-color: rgba(255,255,255,0.1);
+    color: white;
+    cursor: pointer;
+}
+
+    .nav-item ::deep .nav-link:active,
+    .nav-item ::deep .nav-link.active {
+        background-color: rgb(200,0,0);
+        color: white;
+        cursor: pointer;
+    }
+*/
+.nav-scrollable {
+    display: none;
+}
+
+.navbar-toggler:checked ~ .nav-scrollable {
+    display: block;
+}
+
+@media (min-width: 641px) {
+    .navbar-toggler {
+        display: none;
+    }
+
+    .nav-scrollable {
+
+        /* Never collapse the sidebar for wide screens */
+        display: block;
+
+        /* Allow sidebar to scroll for tall menus */
+        height: calc(100vh - 3.5rem);
+        overflow-y: auto;
+    }
+}

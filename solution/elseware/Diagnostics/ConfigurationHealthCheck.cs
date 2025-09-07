@@ -55,7 +55,7 @@ public class ConfigurationHealthCheck : IHealthCheck {
 
         try {
 
-            var l_Configuration = new ConfigurationBuilder().LoadConfiguration();
+            new ConfigurationBuilder().LoadConfiguration();
             return Task.FromResult(HealthCheckResult.Healthy("Configuration is valid."));
         }
         catch (Exception l_Exception) {

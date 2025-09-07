@@ -1,0 +1,121 @@
+﻿
+@*
+Everyware - Copyright © 2025 by CLS
+
+********************************************************************************************************************************************
+****
+**** Project:           Someware
+****
+**** Module:            SignUp.razor
+****
+**** Version:           2025.1.0.0001
+****
+**** Created By:        Cristiano Luelli
+**** Created On:        27/08/2025
+****
+**** Last Changed By:   Cristiano Luelli
+**** Last Changed On:   06/09/2025
+****
+**** Defines the user registration interface and logic.
+****
+********************************************************************************************************************************************
+
+Everyware - Copyright © 2025 by CLS
+*@
+
+@page "/signup"
+
+@using Noware.Dto.Requests
+@using Someware.Services
+@using Someware.Services.Authentication
+@using Someware.Services.Navigation
+
+<PageTitle>Register</PageTitle>
+
+<h1>Register</h1>
+
+<div class="row">
+    <div class="col-lg-6">
+        <EditForm Model="this.signUpRequest" asp-route-returnUrl="@this.ReturnUrl" method="post" OnValidSubmit="this.SignUpUser" FormName="register">
+            <DataAnnotationsValidator />
+            <h3>Create a new account.</h3>
+            <hr />
+            <ValidationSummary class="text-danger" role="alert" />
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="this.signUpRequest.Email" id="txtEmail" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                <label for="txtEmail">Email</label>
+                <ValidationMessage For="() => this.signUpRequest.Email" class="text-danger" />
+            </div>
+            <div class="form-floating mb-3">
+                <InputText type="password" @bind-Value="this.signUpRequest.Password" id="txtPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                <label for="txtPassword">Password</label>
+                <ValidationMessage For="() => this.signUpRequest.Password" class="text-danger" />
+            </div>
+            <div class="form-floating mb-3">
+                <InputText type="password" @bind-Value="this.signUpRequest.ConfirmPassword" id="txtConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                <label for="txtConfirmPassword">Confirm Password</label>
+                <ValidationMessage For="() => this.signUpRequest.ConfirmPassword" class="text-danger" />
+            </div>
+            <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+        </EditForm>
+    </div>
+</div>
+
+
+@* 
+********************************************************************************************************************************************
+****
+**** Defines the logic and interaction handlers for the user registration page.
+****
+********************************************************************************************************************************************
+*@
+
+@code {
+
+    #region Private Fields
+
+    /// <summary>
+    /// A <see cref="SignUpRequest"/> instance representing credentials provided by the user.
+    /// </summary>
+    private SignUpRequest signUpRequest = new();
+
+    #endregion Private Fields
+
+    #region Private Properties
+
+    /// <summary>
+    /// Gets or sets the <see cref="AuthenticationService"/> instance used to perform registration.
+    /// </summary>
+    [Inject]
+    private AuthenticationService AuthenticationService { get; set; } = null!;
+
+    /// <summary>
+    /// Gets or sets the service used to manage post-authentication navigation.
+    /// </summary>
+    [Inject]
+    private RedirectService RedirectManager { get; set; } = null!;
+
+    /// <summary>
+    /// A <see cref="String"/> instance representing the return URL passed via query string.
+    /// </summary>
+    [SupplyParameterFromQuery]
+    private String? ReturnUrl { get; set; }
+
+    #endregion Private Properties
+
+    #region Private Async Methods
+
+    /// <summary>
+    /// Executes the sign-up process using the current credentials.
+    /// </summary>
+    private async Task SignUpUser() {
+
+        var l_SignUpResult = await this.AuthenticationService.SignUpAsync(this.signUpRequest);
+        if (l_SignUpResult.Success is true) {
+            this.signUpRequest = new();            
+            this.RedirectManager.RedirectTo(this.ReturnUrl);
+        }
+    }
+
+    #endregion Private Async Methods
+}

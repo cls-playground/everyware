@@ -1,0 +1,90 @@
+﻿
+/*
+Everyware - Copyright © 2025 by CLS
+
+********************************************************************************************************************************************
+****
+**** Project:           Someware
+****
+**** Module:            loader.css
+****
+**** Version:           2025.1.0.0001
+****
+**** Created By:        Cristiano Luelli
+**** Created On:        02/09/2025
+****
+**** Last Changed By:   Cristiano Luelli
+**** Last Changed On:   06/09/2025
+****
+**** Defines the styles for the initial page loader.
+****
+********************************************************************************************************************************************
+*/
+
+.loader-section {
+    align-items: center;
+    -webkit-animation: loader-fade-in 1s linear forwards;
+    animation: loader-fade-in 1s linear forwards;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    justify-content: center;
+    opacity: 0;
+    padding: 2rem;
+    text-align: center;
+}
+
+@keyframes loader-fade-in {
+    to {
+        opacity: 1;
+    }
+}
+
+.loader-title {
+    color: #0366d6;
+    margin-bottom: 1rem;
+}
+
+.loader-icon {
+    display: block;
+    height: auto;
+    margin-bottom: 2rem;
+    width: 128px;
+}
+
+.loader-dot {
+    -webkit-animation: grow 2.1s infinite ease-in-out both;
+    animation: grow 2.1s infinite ease-in-out both;
+    background-color: #00bb00;
+    border-radius: 50%;
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+}
+
+    .loader-dot.dot1 {
+        -webkit-animation-delay: -0.96s;
+        animation-delay: -0.96s;
+    }
+
+    .loader-dot.dot2 {
+        -webkit-animation-delay: -0.48s;
+        animation-delay: -0.48s;
+    }
+
+    .loader-dot.dot3 {
+        -webkit-animation-delay: 0s;
+        animation-delay: 0s;
+    }
+
+@keyframes grow {
+    0%, 80%, 100% {
+        -webkit-transform: scale(0);
+        transform: scale(0);
+    }
+
+    40% {
+        -webkit-transform: scale(1.4);
+        transform: scale(1.4);
+    }
+}

@@ -75,6 +75,7 @@ public static class WebApplicationExtender {
 
         // Configures middleware pipeline.
         p_This.UseCors("ElsewareCorsPolicy");
+        p_This.UseAuthentication();
         p_This.UseAuthorization();
         p_This.MapControllers();
 

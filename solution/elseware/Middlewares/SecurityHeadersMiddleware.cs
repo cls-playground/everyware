@@ -35,7 +35,7 @@ public class SecurityHeadersMiddleware(
     /// <summary>
     /// A <see cref="RequestDelegate"/> instance representing the next middleware in the HTTP request pipeline.
     /// </summary>
-    private readonly RequestDelegate NextMiddleware = p_NextMiddleware;
+    private readonly RequestDelegate nextMiddleware = p_NextMiddleware;
 
     /// <summary>
     /// Adds security headers to the HTTP response.
@@ -59,6 +59,6 @@ public class SecurityHeadersMiddleware(
 
         l_ResponseHeaders["Referrer-Policy"] = "no-referrer";
 
-        await NextMiddleware(p_HttpContext);
+        await this.nextMiddleware(p_HttpContext);
     }
 }
